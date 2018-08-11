@@ -1,3 +1,5 @@
 var Resource = function () {
-  this.image = loadImage('./image.png');
+  this.titleImage = loadImage('Resource/title.png');
+
+  this.puzzleImage = loadImage('Resource/image.png');
 }
