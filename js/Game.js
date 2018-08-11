@@ -25,6 +25,7 @@ var Game = function () {
     background(0);
     this.input.update();
     this.scene[this.currentScene].update();
+    this.scene[this.currentScene].draw();
 
     // シーン遷移が行われる
     if (this.preScene != this.currentScene) {

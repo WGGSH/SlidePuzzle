@@ -14,19 +14,6 @@ var Button = function (_x, _y, _width, _height, _text, _func) {
 
 
   this.update = function () {
-    if (this.clickFlag == true) {
-      fill(255 * 0.8);
-    } else {
-      fill(255);
-    }
-    rect(this.x, this.y, this.width, this.height);
-
-    fill(255, 0, 0);
-    stroke(255, 0, 0);
-    textSize(this.height);
-    var offsetX = textWidth(this.text) / 2;
-    var offsetY = textAscent();
-    text(this.text, this.x+this.width/2-offsetX, this.y+offsetY);
 
     if (game.input.isMouseClicked) {
       // クリック箇所がボタンの範囲内に有るかチェック
@@ -49,5 +36,21 @@ var Button = function (_x, _y, _width, _height, _text, _func) {
         this.clickFlag = false;
       }
     }
+  }
+
+  this.draw = function () {
+    if (this.clickFlag == true) {
+      fill(255 * 0.8);
+    } else {
+      fill(255);
+    }
+    rect(this.x, this.y, this.width, this.height);
+
+    fill(255, 0, 0);
+    stroke(255, 0, 0);
+    textSize(this.height);
+    var offsetX = textWidth(this.text) / 2;
+    var offsetY = textAscent();
+    text(this.text, this.x + this.width / 2 - offsetX, this.y + offsetY);
   }
 }

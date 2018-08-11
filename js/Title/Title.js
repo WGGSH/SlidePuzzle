@@ -10,11 +10,15 @@ var Title = function () {
   }
 
   this.update = function () {
+    this.button.update();
+    
+  }
+
+  this.draw = function () {
     fill(0, 128, 255);
     rect(0, 0, windowWidth, windowHeight);
 
     // image(game.resource.titleImage, 0, 0);
-
-    this.button.update();
+    this.button.draw();
   }
 }
