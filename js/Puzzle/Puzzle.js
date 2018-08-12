@@ -111,7 +111,8 @@ var Puzzle = function () {
   this.update = function () {
     if (this.clearFlag == true) {
       alert("Game Clear!!");
-      game.currentScene = 0;
+      // game.currentScene = 0;
+      game.nextScene = 0;
     }
 
     var x, y;

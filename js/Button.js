@@ -1,4 +1,4 @@
-var Button = function (_x, _y, _width, _height, _text, _func) {
+var Button = function (_x, _y, _width, _height, _text, _func,_val) {
   this.x = _x;
   this.y = _y;
   this.width = _width;
@@ -29,7 +29,7 @@ var Button = function (_x, _y, _width, _height, _text, _func) {
         mouseY >= this.y && mouseY < this.y + this.height) {
         if (this.clickFlag == true) {
           // ボタンがクリックされたと認識
-          this.func();
+          this.func(_val);
           stroke(255, 0, 0);
           this.clickFlag = false;
         }
@@ -45,9 +45,10 @@ var Button = function (_x, _y, _width, _height, _text, _func) {
     } else {
       fill(255);
     }
+    stroke(0);
     rect(this.x, this.y, this.width, this.height);
 
-    fill(255, 0, 0);
+    fill(0, 0, 0);
     stroke(255, 0, 0);
     textSize(this.height);
     var offsetX = textWidth(this.text) / 2;
