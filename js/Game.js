@@ -17,15 +17,22 @@ var Game = function () {
     this.nextScene = 0;
 
     // シーンリストの作成
-    this.sceneList = new Array(2);
+    this.sceneList = new Array(3);
     this.sceneList[0] = new Title();
     this.sceneList[1] = new Puzzle();
+    this.sceneList[2] = new ImageSelect();
 
     // 初めに読み込まれるシーンを初期化
     this.sceneList[this.currentScene].setup();
   }
 
   this.update = function () {
+    // シーン遷移が行われる場合,次のシーンを初期化する
+    if (this.nextScene != this.currentScene) {
+      removeElements();
+      this.sceneList[this.nextScene].setup();
+      this.currentScene = this.nextScene;
+    }
     // 入力状態の取得
     this.input.update();
 
@@ -38,12 +45,6 @@ var Game = function () {
     // 実行中のシーンを更新
     this.sceneList[this.currentScene].update();
     this.sceneList[this.currentScene].draw();
-
-    // シーン遷移が行われる場合,次のシーンを初期化する
-    if (this.nextScene != this.currentScene) {
-      this.sceneList[this.nextScene].setup();
-      this.currentScene = this.nextScene;
-    }
 
   }
 }

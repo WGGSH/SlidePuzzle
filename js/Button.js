@@ -1,4 +1,4 @@
-var Button = function (_x, _y, _width, _height, _text, _func,_val) {
+var Button = function (_x, _y, _width, _height, _text, _func,_val,_fontSize) {
   this.x = _x;
   this.y = _y;
   this.width = _width;
@@ -50,9 +50,9 @@ var Button = function (_x, _y, _width, _height, _text, _func,_val) {
 
     fill(0, 0, 0);
     stroke(0, 0, 0);
-    textSize(this.height);
+    textSize(_fontSize);
     var offsetX = textWidth(this.text) / 2;
-    var offsetY = textAscent();
+    var offsetY = textAscent()*1.5;
     text(this.text, this.x + this.width / 2 - offsetX, this.y + offsetY);
   }
 }

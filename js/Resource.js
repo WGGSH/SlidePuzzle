@@ -3,5 +3,11 @@ var Resource = function () {
   this.titleImage = loadImage('Resource/title.png');
 
   // パズル画像
-  this.puzzleImage = loadImage('Resource/image.png');
+  this.puzzleImage = new Array();
+  /*this.puzzleImage.push(loadImage('Resource/Pronama_00.png'));
+  this.puzzleImage.push(loadImage('Resource/Pronama_01.png'));
+  this.puzzleImage.push(loadImage('Resource/Pronama_02.png'));*/
+  for (var i = 0; i < 3; i++){
+    this.puzzleImage.push(loadImage('Resource/Pronama_0' + i + '.png'));
+  }
 }

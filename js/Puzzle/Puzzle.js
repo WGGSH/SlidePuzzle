@@ -1,4 +1,5 @@
 var Puzzle = function () {
+  var originalImageIndex; // 使用する画像番号
   var originalImage; // 元画像
   var slicedImage; // 分割画像
   var imageSize; // 画像の一辺の長さ
@@ -8,7 +9,11 @@ var Puzzle = function () {
   var fieldScale; // ゲームに使用する領域の一辺の長さ
   var divNum; // パズルの分割数
 
+  var showNumberFlag; // 数字を表示するかのフラグ
+  var showOriginalImageFlag; // 元画像を表示するかのフラグ
   var clearFlag; // クリアフラグ
+
+  var buttonShowNumber;
 
   this.setDivNum = function (num) {
     // this.divNum = num;
@@ -61,10 +66,12 @@ var Puzzle = function () {
   }
 
   this.setup = function () {
-    this.originalImage = game.resource.puzzleImage;
+    this.originalImage = game.resource.puzzleImage[this.originalImageIndex];
     // this.divNum = 5;
     console.log(this.divNum);
     this.clearFlag = false;
+    this.showNumberFlag = false;
+    this.showOriginalImageFlag = false;
 
     // パズル用の分割画像を作成
     this.slicedImage = new Array(this.divNum);
@@ -105,14 +112,52 @@ var Puzzle = function () {
     // 盤面のシャッフル
     // 分割数^4回ランダムに移動する
     // 移動回数は要検討
-    this.randomMove(this.divNum*this.divNum*this.divNum);
+    this.randomMove(this.divNum * this.divNum * this.divNum * this.divNum);
+    
+    // UIの登録
+    var buttonNumber = createButton("数字を表示");
+    var fontSize = Math.floor(windowHeight / 30) + 'px';
+    var width = Math.floor(windowWidth / 2.5) + 'px';
+    buttonNumber.style('font-size', fontSize);
+    buttonNumber.style('width', width);
+    buttonNumber.position(widthScale(0.25)-buttonNumber.width/2, heightScale(1.0) - 80);
+    buttonNumber.mouseClicked(function () {
+      game.sceneList[1].showNumberFlag = !game.sceneList[1].showNumberFlag;
+    });
+
+    var buttonOriginalImage = createButton("元画像を表示");
+    buttonOriginalImage.style('font-size', fontSize);
+    buttonOriginalImage.style('width', width);
+    buttonOriginalImage.position(widthScale(0.75) - buttonOriginalImage.width/2, heightScale(1.0) - 80);
+    buttonOriginalImage.mouseClicked(function () {
+      game.sceneList[1].showOriginalImageFlag = !game.sceneList[1].showOriginalImageFlag;
+    });
   }
 
   this.update = function () {
+    // UIの更新
+    // this.buttonShowNumber.update();
+
+
     if (this.clearFlag == true) {
-      alert("Game Clear!!");
+      alert("完成!!");
       // game.currentScene = 0;
-      game.nextScene = 0;
+      // game.nextScene = 0;
+      removeElements();
+      this.showOriginalImageFlag = true;
+      this.clearFlag = false;
+
+      var titleButton = createButton('タイトルに戻る');
+      titleButton.style('font-size', '40px');
+      titleButton.style('width', '400px');
+      titleButton.position(widthScale(0.5) - titleButton.width / 2, heightScale(1.0) - 80);
+      titleButton.mouseClicked(function () {
+        game.nextScene = 0;
+      });
+    }
+
+    if(this.showOriginalImageFlag){
+      return;
     }
 
     var x, y;
@@ -166,33 +211,27 @@ var Puzzle = function () {
       this.clearFlag = true;
     }
 
-    /*if (ty >= 0 && this.field[ty][tx] == this.divNum * this.divNum - 1) {
-      console.log("Move");
-      moveFlag = true;
-    }
-    // 下
-    tx = x, ty = y + 1;
-    if (ty < this.divNum && this.field[ty][tx] == this.divNum * this.divNum - 1) {
-      console.log("Move");
-      moveFlag = true;
-    }
-    // 左
-    tx = -1, ty = y;
-    if (tx >= 0 && this.field[ty][tx] == this.divNum * this.divNum - 1) {
-      console.log("Move");
-      moveFlag = true;
-    }
-    // 右
-    tx = x + 1, ty = y;
-    if (tx < this.divNum && this.field[ty][tx] == this.divNum * this.divNum - 1) {
-      console.log("Move");
-      moveFlag = true;
-    }*/
-
-    // this.draw();
   }
 
   this.draw = function () {
+    background(0, 128, 255);
+    // this.buttonShowNumber.draw();
+
+    if (this.showOriginalImageFlag) {
+      if (windowWidth < this.canvasHeight) {
+        translate(0, (this.canvasHeight - windowWidth) / 2);
+        // scale(windowWidth / (this.imageSize * this.divNum));
+        image(this.originalImage, 0, 0, this.imageSize * this.divNum, this.imageSize * this.divNum);
+      } else {
+        translate((windowWidth - this.canvasHeight) / 2, 0);
+        // scale(this.canvasHeight / (this.imageSize * this.divNum));
+        image(this.originalImage, 0, 0, this.canvasHeight, this.canvasHeight);
+      }
+
+      
+      return;
+    }
+
     fill(0, 0, 255);
     push();
     // 画面サイズに合わせて絵が画面真ん中に来るようにキャンバスの大きさを変更する
@@ -206,20 +245,35 @@ var Puzzle = function () {
     // ellipse(mouseX, mouseY, 60, 60);
     for (var y = 0; y < this.divNum; y++) {
       for (var x = 0; x < this.divNum; x++) {
+        
+        // 画像の表示
         if (this.field[y][x] != this.divNum * this.divNum - 1){
           image(this.slicedImage[Math.floor(this.field[y][x] / this.divNum)][this.field[y][x] % this.divNum],
             this.imageSize * x, this.imageSize * y, this.imageSize, this.imageSize);
+        } else {
+          // 空きマスの描画
+          fill(128,128,128);
+          stroke(0);
+          rect(this.imageSize * x, this.imageSize * y, this.imageSize, this.imageSize);
         }
+
         // 数字の表示
-        textSize(this.imageSize/2);
-        stroke(255,64);
-        fill(255,64);
-        var offsetX = -textWidth(this.field[y][x]+"") / 2;
-        var offsetY = textAscent()*1.5;
-        text(this.field[y][x], this.imageSize * (x + 0.5) + offsetX, this.imageSize * y + offsetY);
+        if (this.showNumberFlag == true) {
+          textSize(this.imageSize / 2);
+          blendMode(ADD);
+          stroke(255, 64);
+          strokeWeight(5);
+          fill(255, 64);
+          var offsetX = -textWidth(this.field[y][x] + "") / 2;
+          var offsetY = textAscent() * 1.5;
+          text(this.field[y][x] + 1, this.imageSize * (x + 0.5) + offsetX, this.imageSize * y + offsetY);
+          blendMode(BLEND);
+        }
+
+        // 枠の表示
         noFill();
         stroke(255, 255, 255);
-        strokeWeight(2);
+        strokeWeight(this.imageSize/40);
         rect(this.imageSize * x, this.imageSize * y, this.fieldScale / this.divNum, this.fieldScale / this.divNum);
       }
     }
