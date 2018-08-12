@@ -45,7 +45,5 @@ var Game = function () {
       this.currentScene = this.nextScene;
     }
 
-    // シーン番号の記憶
-    // this.preScene = this.currentScene;
   }
 }

@@ -49,7 +49,7 @@ var Button = function (_x, _y, _width, _height, _text, _func,_val) {
     rect(this.x, this.y, this.width, this.height);
 
     fill(0, 0, 0);
-    stroke(255, 0, 0);
+    stroke(0, 0, 0);
     textSize(this.height);
     var offsetX = textWidth(this.text) / 2;
     var offsetY = textAscent();
