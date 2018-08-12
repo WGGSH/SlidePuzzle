@@ -116,7 +116,7 @@ var Puzzle = function () {
     
     // UIの登録
     var buttonNumber = createButton("数字を表示");
-    var fontSize = Math.floor(windowHeight / 30) + 'px';
+    var fontSize = Math.floor(windowHeight / 35) + 'px';
     var width = Math.floor(windowWidth / 2.5) + 'px';
     buttonNumber.style('font-size', fontSize);
     buttonNumber.style('width', width);
