@@ -1,8 +1,8 @@
 var Input = function () {
-  var mousePressCount;
-  var mouseReleaseCount;
-  var isMouseClicked;
-  var isMouseReleased;
+  var mousePressCount; // 入力が押され続けたフレーム数
+  var mouseReleaseCount; // 入力が離され続けたフレーム数
+  var isMouseClicked; // クリック(タップ)した瞬間を評価
+  var isMouseReleased; // クリック(タップ)から離された瞬間を評価
 
   this.setup = function () {
     this.mousePressCount = 0;

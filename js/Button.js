@@ -16,6 +16,7 @@ var Button = function (_x, _y, _width, _height, _text, _func) {
   this.update = function () {
 
     if (game.input.isMouseClicked) {
+      console.log("clicked");
       // クリック箇所がボタンの範囲内に有るかチェック
       if (mouseX >= this.x && mouseX < this.x + this.width &&
         mouseY >= this.y && mouseY < this.y + this.height) {

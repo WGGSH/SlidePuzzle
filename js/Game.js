@@ -1,37 +1,51 @@
 var Game = function () {
-  var input;
-  var resource;
-  var preScene;
-  var currentScene;
-  var scene;
+  var input; // クリック(タップ)の入力状態
+  var resource; // 画像データなどの保持クラス
+  var currentScene; // 現在のシーン
+  // var preScene; // 1フレーム前のシーン
+  var nextScene; // 次のフレームで呼び出すシーン
+  var sceneList; // シーンリスト
 
   this.setup = function () {
+    // 入力状態,リソースの初期化
     this.resource = new Resource();
     this.input = new Input();
-    this.preScene = 0;
+
+    // シーン状態の初期化
+    // this.preScene = 0;
     this.currentScene = 0;
+    this.nextScene = 0;
 
-    this.scene = new Array(2);
-    this.scene[0] = new Title();
-    this.scene[1] = new Puzzle();
+    // シーンリストの作成
+    this.sceneList = new Array(2);
+    this.sceneList[0] = new Title();
+    this.sceneList[1] = new Puzzle();
 
-    for (var i = 0; i < 2; i++){
-      // this.scene[i].setup();
-    }
-    this.scene[this.currentScene].setup();
+    // 初めに読み込まれるシーンを初期化
+    this.sceneList[this.currentScene].setup();
   }
 
   this.update = function () {
-    background(0);
+    // 入力状態の取得
     this.input.update();
-    this.scene[this.currentScene].update();
-    this.scene[this.currentScene].draw();
 
-    // シーン遷移が行われる
-    if (this.preScene != this.currentScene) {
-      this.scene[this.currentScene].setup();
+    // 画面をリセット
+    background(0);
+
+    // シーン番号を記憶
+    this.nextScene = this.currentScene;
+
+    // 実行中のシーンを更新
+    this.sceneList[this.currentScene].update();
+    this.sceneList[this.currentScene].draw();
+
+    // シーン遷移が行われる場合,次のシーンを初期化する
+    if (this.nextScene != this.currentScene) {
+      this.sceneList[this.nextScene].setup();
+      this.currentScene = this.nextScene;
     }
 
-    this.preScene = this.currentScene;
+    // シーン番号の記憶
+    // this.preScene = this.currentScene;
   }
 }
