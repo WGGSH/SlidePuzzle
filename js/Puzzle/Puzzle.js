@@ -15,6 +15,12 @@ var Puzzle = function () {
 
   var buttonShowNumber;
 
+  var moveFrame; // 一度の移動に要するフレーム数
+  var moveCount;
+  var movingFlag;
+  var moveOldPos;
+  var moveTargetPos;
+
   this.setDivNum = function (num) {
     // this.divNum = num;
     this.divNum = Math.floor(num);
@@ -68,10 +74,16 @@ var Puzzle = function () {
   this.setup = function () {
     this.originalImage = game.resource.puzzleImage[this.originalImageIndex];
     // this.divNum = 5;
-    console.log(this.divNum);
+    // console.log(this.divNum);
     this.clearFlag = false;
     this.showNumberFlag = false;
     this.showOriginalImageFlag = false;
+
+    this.movingFlag = false;
+    this.moveOldPos = new Array(2);
+    this.moveTargetPos = new Array(2);
+    this.moveCount = 0;
+    this.moveFrame = 10;
 
     // パズル用の分割画像を作成
     this.slicedImage = new Array(this.divNum);
@@ -160,6 +172,23 @@ var Puzzle = function () {
       return;
     }
 
+    // パネルを移動中の場合
+    if (this.movingFlag == true) {
+      this.moveCount++;
+      // console.log(this.moveCount);
+      if (this.moveCount == this.moveFrame) {
+        this.moveCount = 0;
+        this.movingFlag = false;
+
+        // パズル完成のチェックを行う
+        if (this.clearCheck() == true) {
+          // alert("Game Clear!!");
+          this.clearFlag = true;
+        }
+      }
+      return;
+    }
+
     var x, y;
     if (game.input.isMouseClicked) {
       // console.log("clicked");
@@ -205,10 +234,15 @@ var Puzzle = function () {
     this.field[tpos[tposIndex][0]][tpos[tposIndex][1]] = this.field[y][x];
     this.field[y][x] = buf;
 
+    // 移動前後の座標を登録
+    this.movingFlag = true;
+    this.moveOldPos = [y, x];
+    this.moveTargetPos = [tpos[tposIndex][0], tpos[tposIndex][1]];
+
     // 移動完了,クリアしたか確認
     if(this.clearCheck()==true){
       // alert("Game Clear!!");
-      this.clearFlag = true;
+      //this.clearFlag = true;
     }
 
   }
@@ -242,19 +276,32 @@ var Puzzle = function () {
       translate((windowWidth - this.canvasHeight) / 2, 0);
       // scale(this.canvasHeight / (this.imageSize * this.divNum));
     }
-    // ellipse(mouseX, mouseY, 60, 60);
+
+    // 背景色で塗りつぶす
+    fill(128, 128, 128);
+    noStroke();
+    rect(0, 0, this.imageSize * this.divNum, this.imageSize * this.divNum);
+
     for (var y = 0; y < this.divNum; y++) {
       for (var x = 0; x < this.divNum; x++) {
         
         // 画像の表示
-        if (this.field[y][x] != this.divNum * this.divNum - 1){
-          image(this.slicedImage[Math.floor(this.field[y][x] / this.divNum)][this.field[y][x] % this.divNum],
-            this.imageSize * x, this.imageSize * y, this.imageSize, this.imageSize);
+        if (this.field[y][x] != this.divNum * this.divNum - 1) {
+          // 移動中のパネルは表示しない
+          if (this.movingFlag == true && y == this.moveTargetPos[0] && x == this.moveTargetPos[1]) {
+            var targetIndex = this.field[this.moveTargetPos[0]][this.moveTargetPos[1]];
+            image(this.slicedImage[Math.floor(targetIndex / this.divNum)][targetIndex % this.divNum], 
+            this.imageSize*this.moveOldPos[1]+this.imageSize/this.moveFrame*this.moveCount*(this.moveTargetPos[1]-this.moveOldPos[1]), this.imageSize*this.moveOldPos[0]+this.imageSize/this.moveFrame*this.moveCount*(this.moveTargetPos[0]-this.moveOldPos[0]), this.imageSize,this.imageSize);
+
+          } else {
+            image(this.slicedImage[Math.floor(this.field[y][x] / this.divNum)][this.field[y][x] % this.divNum],
+              this.imageSize * x, this.imageSize * y, this.imageSize, this.imageSize);
+          }
         } else {
           // 空きマスの描画
-          fill(128,128,128);
-          stroke(0);
-          rect(this.imageSize * x, this.imageSize * y, this.imageSize, this.imageSize);
+          // fill(128,128,128);
+          // stroke(0);
+          // rect(this.imageSize * x, this.imageSize * y, this.imageSize, this.imageSize);
         }
 
         // 数字の表示
